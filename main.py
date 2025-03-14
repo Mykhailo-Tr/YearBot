@@ -1,7 +1,8 @@
 import telebot
 import json
+import os
 
-API_TOKEN = ''
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 bot = telebot.TeleBot(API_TOKEN)
 
