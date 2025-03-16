@@ -1,36 +1,49 @@
 import telebot
 import json
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import os
 
+# Токен бота
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 bot = telebot.TeleBot(API_TOKEN)
 
-year_data = {
-    "1969": "В 1969 році люди вперше приземлилися на Місяць 🚀🌕.",
-    "1989": "У 1989 році відбулося падіння Берлінської стіни 🧱💔.",
-    "2000": "У 2000 році почався новий тисячолітній цикл, і всі хвилювались щодо Y2K проблеми 📅💻."
-}
+# Завантаження історичних даних
+def load_data():
+    with open("history_data.json", "r", encoding="utf-8") as file:
+        return json.load(file)
 
+data = load_data()
 
-@bot.message_handler(commands=['start'])
-def start_message(message):
-    bot.send_message(message.chat.id, "Привіт! 👋 Напишіть рік, і я розкажу, що сталося в тому році. 📅")
+# Отримати всі роки з історичними подіями
+@bot.message_handler(commands=['years'])
+def list_years(message):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    for year in data["years"].keys():
+        keyboard.add(KeyboardButton(year))
+    bot.send_message(message.chat.id, "Оберіть рік для перегляду подій:", reply_markup=keyboard)
 
+# Отримати всі персон
+@bot.message_handler(commands=['personalities'])
+def list_personalities(message):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    for name in data["personalities"].keys():
+        keyboard.add(KeyboardButton(name))
+    bot.send_message(message.chat.id, "Оберіть історичну особу:", reply_markup=keyboard)
 
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    text = message.text.strip()
+# Отримати події за рік
+@bot.message_handler(func=lambda message: message.text in data["years"])
+def send_year_info(message):
+    year = message.text
+    events = "\n".join(data["years"][year])
+    bot.send_message(message.chat.id, f"Історичні події {year} року:\n{events}")
 
-    if text.isdigit():
-        year = text
-        if year in year_data:
-            bot.send_message(message.chat.id, year_data[year])
-        else:
-            bot.send_message(message.chat.id, f"У мене немає інформації про рік {year} 😕.")
-    else:
-        bot.send_message(message.chat.id, "Будь ласка, введіть рік 🗓️.")
+# Отримати інформацію про історичну особу без врахування регістру
+@bot.message_handler(func=lambda message: message.text.lower() in map(str.lower, data["personalities"]))
+def send_personality_info(message):
+    name = next(key for key in data["personalities"].keys() if key.lower() == message.text.lower())
+    person = data["personalities"][name]
+    bot.send_photo(message.chat.id, person["photo"], caption=f"{name}\n{person['info']}")
 
-
-if __name__ == '__main__':
-    bot.polling(none_stop=True)
+# Запуск бота
+bot.polling(none_stop=True)
