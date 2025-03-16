@@ -19,7 +19,7 @@ data = load_data()
 # Привітання при старті
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.send_message(message.chat.id, "👋 Вітаю! Я бот, що допоможе вам дізнатися історичні події 📜 та видатних особистостей 🏛️. Ви можете використовувати команди /years та /personalities.")
+    bot.send_message(message.chat.id, "👋 Вітаю! Я бот, що допоможе вам дізнатися історичні події 📜 та видатних особистостей 🏛️. Ви можете використовувати команди /years та /person.")
 
 # Отримати всі роки з історичними подіями
 @bot.message_handler(commands=['years'])
@@ -30,7 +30,7 @@ def list_years(message):
     bot.send_message(message.chat.id, "📅 Оберіть рік для перегляду подій:", reply_markup=keyboard)
 
 # Отримати всі персон
-@bot.message_handler(commands=['personalities'])
+@bot.message_handler(commands=['person'])
 def list_personalities(message):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     for name in data["personalities"].keys():
