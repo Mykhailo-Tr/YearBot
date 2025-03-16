@@ -4,8 +4,8 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import os
 
 # Токен бота
-# API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-API_TOKEN = "7912946609:AAFFID-p-KTwLB2MzxJWbuQ_u9UbZU3GCAA"
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+# API_TOKEN = "7912946609:AAFFID-p-KTwLB2MzxJWbuQ_u9UbZU3GCAA"
 bot = telebot.TeleBot(API_TOKEN)
 
 # Завантаження історичних даних
