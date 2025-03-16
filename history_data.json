@@ -7,7 +7,7 @@
   },
   "personalities": {
     "Степан Баран": {
-      "photo": "img/baran.jpg",
+      "photo": "https://raw.githubusercontent.com/Mykhailo-Tr/YearBot/refs/heads/main/img/baran.jpg",
       "info": "Член Української Національної Ради, політичний діяч і журналіст."
     }
   }
